@@ -13,6 +13,7 @@ using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using CefSharp.WinForms;
 using CefSharp;
+using System.IO;
 
 namespace VideoApp
 {
@@ -23,9 +24,16 @@ namespace VideoApp
         public Form1()
         {
             InitializeComponent();
-            InitializeChromium();
             this.WindowState = FormWindowState.Maximized;
- 
+            InitializeChromium();
+            LoadLastVideo();
+
+            Panel topPanel = new Panel();
+            topPanel.Dock = DockStyle.Top;
+            topPanel.Height = 30; 
+            this.Controls.Add(topPanel);
+
+            //browser.Load("https://www.youtube.com");
         }
         private void InitializeChromium()
         {
@@ -44,6 +52,7 @@ namespace VideoApp
                 if (!string.IsNullOrEmpty(videoId))
                 {
                     browser.Load($"https://www.youtube.com/embed/{videoId}");
+                    SaveLastVideo(url);
                 }
                 else
                 {
@@ -64,6 +73,28 @@ namespace VideoApp
             return query["v"] ?? uri.Segments[uri.Segments.Length - 1];
         }
 
+        private void SaveLastVideo(string url)
+        {
+            if (!System.IO.File.Exists("lastVideo.txt"))
+            {
+                System.IO.File.Create("lastVideo.txt").Close(); 
+            }
+            System.IO.File.WriteAllText("lastVideo.txt", url);
+        }
+
+        private void LoadLastVideo()
+        {
+            if (System.IO.File.Exists("lastVideo.txt"))
+            {
+                string lastVideoUrl = System.IO.File.ReadAllText("lastVideo.txt");
+                string videoId = ExtractVideoId(lastVideoUrl);
+
+                if (!string.IsNullOrEmpty(videoId))
+                {
+                    browser.Load($"https://www.youtube.com/embed/{videoId}");
+                }
+            }
+        }
         private void btnClear_Click(object sender, EventArgs e)
         {
             textBoxURL.Clear();

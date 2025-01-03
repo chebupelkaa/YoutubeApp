@@ -38,7 +38,7 @@
             // 
             this.textBoxURL.BackColor = System.Drawing.Color.White;
             this.textBoxURL.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxURL.Location = new System.Drawing.Point(12, 3);
+            this.textBoxURL.Location = new System.Drawing.Point(1, 3);
             this.textBoxURL.Name = "textBoxURL";
             this.textBoxURL.Size = new System.Drawing.Size(860, 30);
             this.textBoxURL.TabIndex = 0;
@@ -47,7 +47,7 @@
             // 
             this.btnInputURL.BackColor = System.Drawing.Color.Transparent;
             this.btnInputURL.Font = new System.Drawing.Font("Times New Roman", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnInputURL.Location = new System.Drawing.Point(878, 3);
+            this.btnInputURL.Location = new System.Drawing.Point(867, 3);
             this.btnInputURL.Name = "btnInputURL";
             this.btnInputURL.Size = new System.Drawing.Size(93, 33);
             this.btnInputURL.TabIndex = 1;
@@ -59,7 +59,7 @@
             // 
             this.btnClear.BackColor = System.Drawing.Color.Transparent;
             this.btnClear.Font = new System.Drawing.Font("Times New Roman", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnClear.Location = new System.Drawing.Point(977, 3);
+            this.btnClear.Location = new System.Drawing.Point(966, 3);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(115, 33);
             this.btnClear.TabIndex = 2;
