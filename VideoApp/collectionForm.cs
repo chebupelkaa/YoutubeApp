@@ -14,18 +14,28 @@ namespace VideoApp
 {
     public partial class collectionForm : Form
     {
-        public collectionForm(string name,string url)
+        public event Action<string> UrlSelected;
+        public collectionForm(Video video)
         {
             InitializeComponent();
-            textBox1.Text = name;
-            textBox2.Text = url;
+            LoadCollection();
+            textBox1.Text = video.Title;
+            textBox2.Text = video.Url;
+            this.Icon = new Icon("youtube-icon2.ico");
         }
 
-        private void collectionForm_Load(object sender, EventArgs e)
+        private void LoadCollection()
         {
-
+            listBox1.Items.Clear();
+            if (File.Exists("collection.txt"))
+            {
+                var lines = File.ReadAllLines("collection.txt");
+                foreach (var line in lines)
+                {
+                    listBox1.Items.Add(line); 
+                }
+            }
         }
-
         public void SaveToCollection(string name, string url)
         {
             if (!File.Exists("collection.txt"))
@@ -41,6 +51,49 @@ namespace VideoApp
         private void buttonSaveToCollection_Click(object sender, EventArgs e)
         {
             SaveToCollection(textBox1.Text, textBox2.Text);
+            //MessageBox.Show("Видео добавлено в коллекцию");
+            LoadCollection();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (listBox1.SelectedItem != null)
+            {
+                listBox1.Items.Remove(listBox1.SelectedItem);
+                SaveCollection();
+                LoadCollection();
+            }
+            else
+            {
+                MessageBox.Show("Пожалуйста, выберите видео для удаления.");
+            }
+        }
+        private void SaveCollection()
+        {
+            File.WriteAllLines("collection.txt", listBox1.Items.Cast<string>());
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            File.WriteAllText("collection.txt", string.Empty);
+            LoadCollection();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (listBox1.SelectedItem != null)
+            {
+                var selectedItem = listBox1.SelectedItem.ToString();
+                var url = selectedItem.Split(';')[1];
+                UrlSelected?.Invoke(url);
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Пожалуйста, выберите видео для просмотра.");
+            }
+        }
+
+
     }
 }
