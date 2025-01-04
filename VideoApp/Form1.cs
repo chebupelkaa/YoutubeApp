@@ -20,7 +20,9 @@ namespace VideoApp
     public partial class Form1 : Form
     {
         private ChromiumWebBrowser browser;
-        private readonly string apiKey = "AIzaSyByzPkKv-T5Izf_V7yHTvzGiGGITvAUNWw";
+
+        private string currentURL;
+        private string currentName;
         public Form1()
         {
             InitializeComponent();
@@ -28,11 +30,12 @@ namespace VideoApp
             InitializeChromium();
             LoadLastVideo();
 
-            Panel topPanel = new Panel();
-            topPanel.Dock = DockStyle.Top;
-            topPanel.Height = 30; 
-            this.Controls.Add(topPanel);
+            //Panel topPanel = new Panel();
+            //topPanel.Dock = DockStyle.Top;
+            //topPanel.Height = 30;
+            //this.Controls.Add(topPanel);
 
+            this.Icon = new Icon("youtube-icon2.ico");
             //browser.Load("https://www.youtube.com");
         }
         private void InitializeChromium()
@@ -52,7 +55,12 @@ namespace VideoApp
                 if (!string.IsNullOrEmpty(videoId))
                 {
                     browser.Load($"https://www.youtube.com/embed/{videoId}");
+                    //var title=await browser.EvaluateScriptAsync("document.title");
                     SaveLastVideo(url);
+                    currentURL = url;
+                    //currentName = title.Result.ToString();
+                    //MessageBox.Show(title.Result.ToString(), "Название видео");
+                    browser.LoadingStateChanged += OnLoadingStateChanged;
                 }
                 else
                 {
@@ -66,6 +74,18 @@ namespace VideoApp
 
         }
 
+        private async void OnLoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
+        {
+            if (!e.IsLoading)
+            {
+                var title = await browser.EvaluateScriptAsync("document.title");
+                if (title.Success)
+                {
+                    currentName = title.Result.ToString();
+                }
+            }
+        }
+
         private string ExtractVideoId(string url)
         {
             var uri = new Uri(url);
@@ -75,29 +95,39 @@ namespace VideoApp
 
         private void SaveLastVideo(string url)
         {
-            if (!System.IO.File.Exists("lastVideo.txt"))
+            if (!File.Exists("lastVideo.txt"))
             {
-                System.IO.File.Create("lastVideo.txt").Close(); 
+                File.Create("lastVideo.txt").Close(); 
             }
-            System.IO.File.WriteAllText("lastVideo.txt", url);
+            File.WriteAllText("lastVideo.txt", url);
         }
 
         private void LoadLastVideo()
         {
             if (System.IO.File.Exists("lastVideo.txt"))
             {
-                string lastVideoUrl = System.IO.File.ReadAllText("lastVideo.txt");
+                string lastVideoUrl = File.ReadAllText("lastVideo.txt");
                 string videoId = ExtractVideoId(lastVideoUrl);
 
                 if (!string.IsNullOrEmpty(videoId))
                 {
                     browser.Load($"https://www.youtube.com/embed/{videoId}");
+                    currentURL = $"https://www.youtube.com/embed/{videoId}";
+                    browser.LoadingStateChanged += OnLoadingStateChanged;
                 }
             }
         }
+
         private void btnClear_Click(object sender, EventArgs e)
         {
             textBoxURL.Clear();
+        }
+
+        private void collectionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            collectionForm collectionForm = new collectionForm(currentName,currentURL);
+            
+            collectionForm.Show();
         }
     }
 }
