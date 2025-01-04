@@ -32,9 +32,10 @@ namespace VideoApp
                 var lines = File.ReadAllLines("collection.txt");
                 foreach (var line in lines)
                 {
-                    listBox1.Items.Add(line); 
+                    listBox1.Items.Add(line);
                 }
             }
+            else File.Create("collection.txt").Close();
         }
         public void SaveToCollection(string name, string url)
         {
@@ -70,11 +71,19 @@ namespace VideoApp
         }
         private void SaveCollection()
         {
+            if (!File.Exists("collection.txt"))
+            {
+                File.Create("collection.txt").Close();
+            }
             File.WriteAllLines("collection.txt", listBox1.Items.Cast<string>());
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
+            if (!File.Exists("collection.txt"))
+            {
+                File.Create("collection.txt").Close();
+            }
             File.WriteAllText("collection.txt", string.Empty);
             LoadCollection();
         }
